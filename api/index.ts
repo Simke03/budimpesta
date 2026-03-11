@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { handle } from "@hono/node-server/vercel";
+import { handle } from "hono/vercel";
 import { neon } from "@neondatabase/serverless";
 import { readFileSync } from "fs";
 import { join } from "path";
