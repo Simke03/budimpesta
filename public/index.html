@@ -1568,6 +1568,7 @@
           id: "klubovi",
           name: "Klubovi (Instant/Fogas)",
           icon: "\u{1F3B6}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Budapest%2C_Ak%C3%A1cfa_utca%2C_Fogas.jpg/960px-Budapest%2C_Ak%C3%A1cfa_utca%2C_Fogas.jpg",
           desc: "Najveći klub-kompleks u Budimpešti sa više podova i muzičkih pravaca. Techno, house, pop, live nastupi \u2014 sve pod jednim krovom do ranih jutarnjih časova.",
         },
       ]},
@@ -1595,13 +1596,7 @@
         },
       ]},
       { category: "Hrana", items: [
-        {
-          id: "vecera",
-          name: "Organizovana večera u grupi",
-          icon: "\u{1F37D}",
-          desc: "Zajednička večera čitave ekipe u nekom od odličnih budimpeštanskih restorana. Mađarska kuhinja, dobro vino i još bolje društvo \u2014 obavezna tačka programa.",
-        },
-        {
+{
           id: "new_york_cafe",
           name: "New York Caf\u00E9 (kafa/doručak)",
           icon: "\u{2615}",
@@ -1987,14 +1982,7 @@
         duration: "1.5-2h",
         mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Margaret+Island,+Budapest",
       },
-      vecera: {
-        transport: "Zavisi od restorana \u2014 centar grada M3 do Deak/Ferenciek",
-        transportIcon: "\u{1F687}",
-        time: "~10-15 min",
-        duration: "2-3h",
-        mapsUrl: "https://www.google.com/maps/search/restaurants+Budapest+center",
-      },
-      new_york_cafe: {
+new_york_cafe: {
         transport: "M3 (Corvin-negyed) do Blaha Lujza ter, pa 3 min pješice",
         transportIcon: "\u{1F687}",
         time: "~8 min",
@@ -2059,7 +2047,7 @@
       {
         label: "Ponedjeljak",
         subtitle: "Sjeverni Pest + opuštanje",
-        activities: ["new_york_cafe", "szechenyi", "vajdahunyad", "margaret", "stand25", "vecera"],
+        activities: ["new_york_cafe", "szechenyi", "vajdahunyad", "margaret", "stand25"],
       },
     ];
 
@@ -2339,6 +2327,29 @@
 
     // Check status and plan
     checkStatus();
+
+    // Poll for plan every 5 seconds (stops once plan is found)
+    let planPollInterval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/plan");
+        const data = await res.json();
+        if (data.plan) {
+          genplanTab.style.display = "";
+          renderGeneratedPlan(data.plan);
+          clearInterval(planPollInterval);
+        }
+        // Also check voting status
+        const statusRes = await fetch("/api/status");
+        const statusData = await statusRes.json();
+        if (statusData.voting_closed && !votingClosed) {
+          votingClosed = true;
+          closedBanner.classList.add("visible");
+          nameSection.style.display = "none";
+          saveBar.classList.remove("visible");
+          document.querySelectorAll(".activity-card").forEach(c => c.classList.add("disabled"));
+        }
+      } catch {}
+    }, 5000);
   </script>
 </body>
 </html>
