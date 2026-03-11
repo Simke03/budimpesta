@@ -1202,7 +1202,6 @@
   <div class="tabs">
     <div class="tab active" data-tab="plan">Glasanje</div>
     <div class="tab" data-tab="summary">Ko je za šta</div>
-    <div class="tab" data-tab="itinerary">Plan puta</div>
     <div class="tab" data-tab="route">Dušanov predlog</div>
     <div class="tab" data-tab="genplan" id="genplanTab" style="display:none;">AI Plan</div>
   </div>
@@ -1224,20 +1223,6 @@
     <div id="summaryList"></div>
   </div>
 
-  <div id="itinerary" class="tab-content">
-    <div class="itin-base-card">
-      <div class="itin-base-icon">&#x1F3E0;</div>
-      <div class="itin-base-info">
-        <div class="itin-base-label">Baza</div>
-        <div class="itin-base-address">Mester utca 29, Budapest (IX)</div>
-        <div class="itin-base-detail">Corvin-negyed M3 metro &mdash; 3 min pješice</div>
-      </div>
-    </div>
-    <div id="itineraryList"></div>
-    <div class="itin-empty" id="itinEmpty" style="display:none;">
-      Niko još nije glasao. Vrati se na tab <strong>Glasanje</strong> i odaberi aktivnosti!
-    </div>
-  </div>
 
   <div id="route" class="tab-content">
 
@@ -1503,7 +1488,7 @@
 
   <!-- Footer -->
   <div class="footer">
-    <a class="footer-admin-link" id="adminLink">&copy;Budapest 2025</a>
+    <a class="footer-admin-link" id="adminLink">&copy;Budapest 2026</a>
   </div>
 
   <!-- Admin modal -->
@@ -1734,9 +1719,6 @@
 
         if (target === "summary") {
           loadSummary();
-          saveBar.classList.remove("visible");
-        } else if (target === "itinerary") {
-          loadItinerary();
           saveBar.classList.remove("visible");
         } else if (target === "route" || target === "genplan") {
           saveBar.classList.remove("visible");
