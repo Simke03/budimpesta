@@ -122,6 +122,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return json(res, { ok: true, message: "Glasanje je zatvoreno!" });
     }
 
+    // POST /api/admin/open (reopen voting)
+    if (method === "POST" && path === "/api/admin/open") {
+      const { password } = req.body;
+      if (password !== "budimpesta2026") {
+        return json(res, { error: "Pogrešna lozinka" }, 401);
+      }
+      await sql`UPDATE settings SET value = 'false' WHERE key = 'voting_closed'`;
+      return json(res, { ok: true, message: "Glasanje je ponovo otvoreno!" });
+    }
+
     // GET /api/plan
     if (method === "GET" && path === "/api/plan") {
       const rows = await sql`SELECT value FROM settings WHERE key = 'generated_plan'`;
