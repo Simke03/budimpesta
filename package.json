@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Budapest group trip planner",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "echo 'Use: npx vercel dev'",
     "build": "true"
