@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="cnr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budimpesta 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fdf6ee;
+      --card-bg: #fff;
+      --primary: #c0392b;
+      --primary-light: #e74c3c;
+      --accent: #d4a04a;
+      --accent-light: #f0d68a;
+      --text: #2c2c2c;
+      --text-light: #6b6b6b;
+      --border: #e8ddd0;
+      --green: #27ae60;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, #a93226 100%);
+      color: white;
+      padding: 28px 20px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -20px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-top: 6px;
+      position: relative;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: var(--card-bg);
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+      flex: 1;
+      min-width: max-content;
+      padding: 14px 12px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px 16px 100px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .tab-content.active { display: block; }
+
+    /* Voting closed banner */
+    .closed-banner {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      padding: 16px 20px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+      display: none;
+    }
+
+    .closed-banner.visible { display: block; }
+
+    /* Name input */
+    .name-section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .name-section label {
+      display: block;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .name-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .name-input-row input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    .name-input-row input:focus {
+      border-color: var(--accent);
+    }
+
+    .name-input-row button {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .name-input-row button:active { transform: scale(0.96); }
+
+    .name-status {
+      font-size: 13px;
+      margin-top: 8px;
+      color: var(--green);
+      min-height: 20px;
+    }
+
+    /* Category */
+    .category {
+      margin-bottom: 28px;
+    }
+
+    .category-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-light);
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+
+    /* Instagram-style activity card */
+    .activity-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      border: 2px solid transparent;
+    }
+
+    .activity-card:active { transform: scale(0.98); }
+
+    .activity-card.checked {
+      border-color: var(--accent);
+    }
+
+    .activity-card .card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      background: #e8ddd0;
+    }
+
+    .activity-card .card-body {
+      padding: 14px 16px 16px;
+    }
+
+    .activity-card .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .activity-card .card-icon { font-size: 20px; flex-shrink: 0; }
+
+    .activity-card .card-title {
+      font-weight: 700;
+      font-size: 15px;
+      flex: 1;
+    }
+
+    .activity-card .card-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    .activity-card .card-vote-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--bg);
+      transition: all 0.2s;
+    }
+
+    .activity-card.checked .card-vote-btn {
+      background: linear-gradient(135deg, #fef9eb, #fdf3d7);
+    }
+
+    .activity-card .card-checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .activity-card.checked .card-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .activity-card.checked .card-checkbox::after {
+      content: '';
+      width: 7px;
+      height: 12px;
+      border: solid white;
+      border-width: 0 2.5px 2.5px 0;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .activity-card .card-vote-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .activity-card.checked .card-vote-label {
+      color: var(--accent);
+    }
+
+    .activity-card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Save button */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(to top, var(--bg) 60%, transparent);
+      display: none;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .save-bar.visible { display: flex; }
+
+    .save-btn {
+      width: 100%;
+      max-width: 600px;
+      padding: 16px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+      font-family: inherit;
+      box-shadow: 0 4px 20px rgba(39,174,96,0.3);
+    }
+
+    .save-btn:active { transform: scale(0.97); }
+    .save-btn:disabled {
+      background: #bdc3c7;
+      box-shadow: none;
+    }
+
+    /* Summary tab */
+    .summary-activity {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-activity-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .summary-activity-icon { font-size: 22px; }
+
+    .summary-activity-name {
+      font-weight: 700;
+      font-size: 15px;
+      flex: 1;
+    }
+
+    .summary-count {
+      background: var(--accent-light);
+      color: #8a6d2b;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Progress bar */
+    .summary-progress {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .summary-progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--accent), #e2b553);
+      transition: width 0.4s ease;
+    }
+
+    .summary-people {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .summary-person {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .summary-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .summary-nobody {
+      color: var(--text-light);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .summary-category-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      margin-top: 8px;
+      padding-left: 4px;
+    }
+
+    /* Itinerary */
+    .itin-base-card {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .itin-base-icon { font-size: 28px; flex-shrink: 0; }
+
+    .itin-base-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
+
+    .itin-base-address { font-weight: 700; font-size: 15px; }
+
+    .itin-base-detail {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 3px;
+    }
+
+    .itin-day {
+      margin-bottom: 28px;
+    }
+
+    .itin-day-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-left: 2px;
+    }
+
+    .itin-day-label {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .itin-day-subtitle {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .itin-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--accent);
+    }
+
+    .itin-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .itin-card-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+
+    .itin-card-title {
+      font-weight: 700;
+      font-size: 15px;
+      flex: 1;
+    }
+
+    .itin-card-voters {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 3px;
+    }
+
+    .itin-card-duration {
+      background: var(--accent-light);
+      color: #8a6d2b;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+
+    .itin-transport {
+      background: #f0f4f8;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .itin-transport-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .itin-transport-text { flex: 1; color: var(--text); }
+
+    .itin-transport-time {
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .itin-maps-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #2980b9;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 6px 12px;
+      background: #ebf5fb;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+
+    .itin-maps-link:active { background: #d4e6f1; }
+
+    .itin-empty {
+      text-align: center;
+      color: var(--text-light);
+      padding: 60px 20px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .itin-connector {
+      width: 2px;
+      height: 16px;
+      background: var(--border);
+      margin: 0 auto;
+      margin-bottom: 12px;
+      border-radius: 2px;
+    }
+
+    /* Route / Timeline */
+    .route-intro {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .route-intro-badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .route-intro p {
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.85;
+    }
+
+    /* Transport card */
+    .transport-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .transport-header {
+      background: linear-gradient(135deg, #2980b9, #3498db);
+      color: white;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .transport-header-icon { font-size: 22px; }
+
+    .transport-section {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .transport-section:last-child { border-bottom: none; }
+
+    .transport-section-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .transport-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .transport-list li {
+      font-size: 13px;
+      line-height: 1.5;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .transport-list li::before {
+      content: '\2022';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .transport-highlight {
+      background: #fef9eb;
+    }
+
+    .transport-highlight p {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .transport-price {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-top: 6px;
+    }
+
+    .transport-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .transport-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .line-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 24px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: white;
+      padding: 0 6px;
+      flex-shrink: 0;
+    }
+
+    .line-m1 { background: #f1c40f; color: #2c2c2c; }
+    .line-m2 { background: #e74c3c; }
+    .line-m3 { background: #2980b9; }
+    .line-tram { background: #f39c12; }
+    .line-bolt { background: #2ecc71; }
+
+    .transport-warning {
+      padding: 14px 18px;
+      background: #fdf2f2;
+      font-size: 13px;
+      line-height: 1.5;
+      border-top: 2px solid #e74c3c;
+    }
+
+    /* Timeline days */
+    .tl-day {
+      margin-bottom: 32px;
+    }
+
+    .tl-day-header {
+      padding: 16px 18px;
+      border-radius: var(--radius);
+      margin-bottom: 4px;
+    }
+
+    .tl-day-sat .tl-day-header { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+    .tl-day-sun .tl-day-header { background: linear-gradient(135deg, #2980b9, #2471a3); color: white; }
+    .tl-day-mon .tl-day-header { background: linear-gradient(135deg, #27ae60, #229954); color: white; }
+    .tl-day-tue .tl-day-header { background: linear-gradient(135deg, #8e44ad, #7d3c98); color: white; }
+
+    .tl-day-label {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .tl-day-sub {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .tl-items {
+      position: relative;
+      padding-left: 68px;
+    }
+
+    .tl-items::before {
+      content: '';
+      position: absolute;
+      left: 52px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 3px;
+    }
+
+    .tl-day-sat .tl-items::before { background: #fadbd8; }
+    .tl-day-sun .tl-items::before { background: #d4e6f1; }
+    .tl-day-mon .tl-items::before { background: #d5f5e3; }
+    .tl-day-tue .tl-items::before { background: #e8daef; }
+
+    .tl-item {
+      position: relative;
+      padding: 16px 0;
+    }
+
+    .tl-time {
+      position: absolute;
+      left: -68px;
+      top: 18px;
+      width: 46px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: -21px;
+      top: 20px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--border);
+    }
+
+    .tl-day-sat .tl-dot { background: #e74c3c; box-shadow: 0 0 0 2px #e74c3c; }
+    .tl-day-sun .tl-dot { background: #2980b9; box-shadow: 0 0 0 2px #2980b9; }
+    .tl-day-mon .tl-dot { background: #27ae60; box-shadow: 0 0 0 2px #27ae60; }
+    .tl-day-tue .tl-dot { background: #8e44ad; box-shadow: 0 0 0 2px #8e44ad; }
+
+    .tl-content {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .tl-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .tl-desc {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-light);
+    }
+
+    .tl-choice {
+      background: #fef9eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 6px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .tl-item-optional .tl-content {
+      border: 2px dashed var(--border);
+      box-shadow: none;
+    }
+
+    .tl-optional-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: var(--accent-light);
+      color: #8a6d2b;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* Generated plan tab */
+    .gen-plan-empty {
+      text-align: center;
+      color: var(--text-light);
+      padding: 60px 20px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .gen-plan-intro {
+      background: linear-gradient(135deg, #8e44ad, #7d3c98);
+      color: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .gen-plan-intro-badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .gen-plan-intro p {
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.85;
+    }
+
+    .gen-plan-day {
+      margin-bottom: 32px;
+    }
+
+    .gen-plan-day-header {
+      padding: 16px 18px;
+      border-radius: var(--radius);
+      margin-bottom: 4px;
+      color: white;
+    }
+
+    .gen-plan-day:nth-child(2) .gen-plan-day-header { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .gen-plan-day:nth-child(3) .gen-plan-day-header { background: linear-gradient(135deg, #2980b9, #2471a3); }
+    .gen-plan-day:nth-child(4) .gen-plan-day-header { background: linear-gradient(135deg, #27ae60, #229954); }
+    .gen-plan-day:nth-child(5) .gen-plan-day-header { background: linear-gradient(135deg, #8e44ad, #7d3c98); }
+
+    .gen-plan-day-label {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .gen-plan-day-theme {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .gen-plan-items {
+      position: relative;
+      padding-left: 68px;
+    }
+
+    .gen-plan-items::before {
+      content: '';
+      position: absolute;
+      left: 52px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--border);
+    }
+
+    .gen-plan-item {
+      position: relative;
+      padding: 16px 0;
+    }
+
+    .gen-plan-time {
+      position: absolute;
+      left: -68px;
+      top: 18px;
+      width: 46px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .gen-plan-dot {
+      position: absolute;
+      left: -21px;
+      top: 20px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .gen-plan-item-optional .gen-plan-dot {
+      background: var(--border);
+      box-shadow: 0 0 0 2px var(--border);
+    }
+
+    .gen-plan-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .gen-plan-item-optional .gen-plan-card {
+      border: 2px dashed var(--border);
+      box-shadow: none;
+    }
+
+    .gen-plan-card-name {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .gen-plan-card-address {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .gen-plan-card-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .gen-plan-card-transport {
+      background: #f0f4f8;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .gen-plan-card-duration {
+      display: inline-block;
+      background: var(--accent-light);
+      color: #8a6d2b;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* Admin modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      padding: 20px;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .modal-field {
+      margin-bottom: 16px;
+    }
+
+    .modal-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-light);
+    }
+
+    .modal-field input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .modal-field input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-btn {
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+
+    .modal-btn:active { transform: scale(0.97); }
+    .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .modal-btn-close-voting {
+      background: var(--primary);
+      color: white;
+    }
+
+    .modal-btn-generate {
+      background: linear-gradient(135deg, #8e44ad, #7d3c98);
+      color: white;
+    }
+
+    .modal-btn-cancel {
+      background: var(--bg);
+      color: var(--text-light);
+    }
+
+    .modal-status {
+      font-size: 13px;
+      text-align: center;
+      margin-top: 12px;
+      min-height: 20px;
+      color: var(--text-light);
+    }
+
+    .modal-status.error { color: var(--primary); }
+    .modal-status.success { color: var(--green); }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-light);
+      font-size: 12px;
+    }
+
+    .footer-admin-link {
+      color: var(--text-light);
+      text-decoration: none;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+
+    .footer-admin-link:hover { opacity: 0.7; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #2c2c2c;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (min-width: 640px) {
+      .header { padding: 36px 20px 30px; }
+      .header h1 { font-size: 32px; }
+      .tab-content { padding: 28px 20px 100px; }
+      .activity-card .card-image { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Budimpesta 2026</h1>
+    <p>Isplaniraj avanturu s ekipom</p>
+  </div>
+
+  <div class="closed-banner" id="closedBanner">Glasanje je zatvoreno!</div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="plan">Glasanje</div>
+    <div class="tab" data-tab="summary">Ko je za šta</div>
+    <div class="tab" data-tab="itinerary">Plan puta</div>
+    <div class="tab" data-tab="route">Dušanov predlog</div>
+    <div class="tab" data-tab="genplan" id="genplanTab" style="display:none;">AI Plan</div>
+  </div>
+
+  <div id="plan" class="tab-content active">
+    <div class="name-section" id="nameSection">
+      <label for="nameInput">Tvoje ime</label>
+      <div class="name-input-row">
+        <input type="text" id="nameInput" placeholder="Unesi ime..." autocomplete="off" />
+        <button id="loadBtn">Učitaj</button>
+      </div>
+      <div class="name-status" id="nameStatus"></div>
+    </div>
+
+    <div id="activitiesList"></div>
+  </div>
+
+  <div id="summary" class="tab-content">
+    <div id="summaryList"></div>
+  </div>
+
+  <div id="itinerary" class="tab-content">
+    <div class="itin-base-card">
+      <div class="itin-base-icon">&#x1F3E0;</div>
+      <div class="itin-base-info">
+        <div class="itin-base-label">Baza</div>
+        <div class="itin-base-address">Mester utca 29, Budapest (IX)</div>
+        <div class="itin-base-detail">Corvin-negyed M3 metro &mdash; 3 min pješice</div>
+      </div>
+    </div>
+    <div id="itineraryList"></div>
+    <div class="itin-empty" id="itinEmpty" style="display:none;">
+      Niko još nije glasao. Vrati se na tab <strong>Glasanje</strong> i odaberi aktivnosti!
+    </div>
+  </div>
+
+  <div id="route" class="tab-content">
+
+    <!-- Prevoz i karte -->
+    <div class="transport-card">
+      <div class="transport-header">
+        <span class="transport-header-icon">&#x1F6A8;</span>
+        <span class="transport-header-title">Prevoz i karte</span>
+      </div>
+
+      <div class="transport-section">
+        <div class="transport-section-title">&#x1F3AB; Gdje kupiti karte</div>
+        <ul class="transport-list">
+          <li>Na aerodromu odmah po dolasku: BKK šalteri u Terminalu 2A i 2B (radi non-stop)</li>
+          <li>Automati (ljubičaste mašine) na svim metro stanicama</li>
+          <li>App: <strong>BudapestGO</strong> (Android/iOS) &mdash; najlakše, plaćanje karticom</li>
+        </ul>
+      </div>
+
+      <div class="transport-section transport-highlight">
+        <div class="transport-section-title">&#x2B50; Preporuka za grupu</div>
+        <p><strong>72-satna karta</strong> &mdash; vrijedi subota&ndash;ponedjeljak, neograničen broj vožnji</p>
+        <p class="transport-price">~5.500 HUF po osobi (~14&euro;)</p>
+      </div>
+
+      <div class="transport-section">
+        <div class="transport-section-title">&#x1F687; Glavne linije</div>
+        <div class="transport-lines">
+          <div class="transport-line">
+            <span class="line-badge line-m1">M1</span>
+            <span>Szechenyi kupke, Heroes' Square</span>
+          </div>
+          <div class="transport-line">
+            <span class="line-badge line-m2">M2</span>
+            <span>Parlament (Kossuth Lajos ter)</span>
+          </div>
+          <div class="transport-line">
+            <span class="line-badge line-m3">M3</span>
+            <span>Corvin-negyed (3 min od apartmana) do centra</span>
+          </div>
+          <div class="transport-line">
+            <span class="line-badge line-tram">2</span>
+            <span>Tramvaj uz Dunav, prelijep pogled</span>
+          </div>
+          <div class="transport-line">
+            <span class="line-badge line-tram">4/6</span>
+            <span>Glavni gradski tramvaj, vozi non-stop</span>
+          </div>
+          <div class="transport-line">
+            <span class="line-badge line-bolt">Bolt</span>
+            <span>Za Tropicarium i kasne noći, jeftiniji od taksija</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="transport-warning">
+        &#x26A0;&#xFE0F; Karte se moraju komposterati (validirati) pri ulasku &mdash; inspekcija je česta, kazna <strong>16.000 HUF</strong>!
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="route-intro">
+      <div class="route-intro-badge">&#x1F9ED; Dušanov predlog</div>
+      <p>Bio sam 3 puta u Budimpešti &mdash; ovo je moja preporučena ruta po danima, optimizovana da ne krstamo bespotrebno po gradu.</p>
+    </div>
+
+    <!-- SUBOTA -->
+    <div class="tl-day tl-day-sat">
+      <div class="tl-day-header">
+        <div class="tl-day-label">Subota</div>
+        <div class="tl-day-sub">Dolazak + prvi okus grada</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <div class="tl-time">11:30</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F3E0; Dolazak na smještaj</div>
+            <div class="tl-desc">Mester utca 29, IX kvart. Ostavljamo stvari, osvježimo se.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">12:30</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x26EA; Bazilika Svetog Stjepana</div>
+            <div class="tl-desc">Opuštena atmosfera, kafići okolo, šetnja po trgu. Jedan od najljepših dijelova grada za prvu šetnju.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">14:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F95E; Ručak &mdash; Retro Lángoš</div>
+            <div class="tl-desc">Vécsey utca 3, 5 min od Bazilike. Najpoznatiji langoš u gradu &mdash; hrskav spolja, mekan iznutra. Preko 30 vrsta.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">16:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F378; 360 Bar</div>
+            <div class="tl-desc">Rooftop koktel bar sa panoramskim pogledom na cijeli grad (Andrássy út 39). Koktel i sunset &mdash; savršena kombinacija.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">20:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F37D;&#xFE0F; Večera po izboru</div>
+            <div class="tl-desc">Preporuke: Menza (Liszt Ferenc tér), Stand25 Bistro, ili nešto lakše ako ste umorni od puta.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">22:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F3B6; Noćni izlazak</div>
+            <div class="tl-desc tl-choice">IZBOR: <strong>Instant-Fogas</strong> (klub, 7 soba, svaka drugačija muzika) ILI <strong>Széchenyi noćna žurka</strong> u termama &mdash; jedinstven doživljaj.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEDJELJA -->
+    <div class="tl-day tl-day-sun">
+      <div class="tl-day-header">
+        <div class="tl-day-label">Nedjelja</div>
+        <div class="tl-day-sub">Kulturni dan</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <div class="tl-time">09:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x2615; Doručak &mdash; New York Café</div>
+            <div class="tl-desc">Jedan od najljepših kafića na svijetu (Erzsébet krt. 9-11). Raskošni zlatni enterijeri iz 1894. M3 do Blaha Lujza tér, 3 min pješice.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">11:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F3F0; Fisherman's Bastion + Budimska tvrdava</div>
+            <div class="tl-desc">Castle Hill &mdash; najbolji pogled na Dunav i Pest. Sa Bastiona se pruža jedan od najboljih pogleda na Parlament s druge strane rijeke &mdash; idealno za fotografije. Pješačenje po tvrđavi, skrivena dvorišta, galerije.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">14:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F6D2; Ručak &mdash; Velika tržnica</div>
+            <div class="tl-desc">Nagy Vásárcsarnok &mdash; langoš na spratu, suveniri, paprika, domaći proizvodi. Prekrasna neogotička hala.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">16:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x2615; Slobodno vrijeme / kafići</div>
+            <div class="tl-desc">Odmor, šetnja, shopping. Uveče može šetnja pored osvijetljenog Parlamenta &mdash; izgleda spektakularno noću.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">19:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F372; Večera &mdash; Gettó Gulyás</div>
+            <div class="tl-desc">Wesselényi utca 18, Jevrejski kvart. Najomiljeniji gulaš restoran u gradu. Kratki meni, pravi mađarski klasici. <strong>Rezervacija obavezna!</strong></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">21:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F37B; Szimpla Kert ruin bar</div>
+            <div class="tl-desc">Kazinczy utca 14 &mdash; ikonski ruin bar, obavezno posjetiti. Svaka soba je drugačija, puno umjetnina i kreativnog haosa. U istom kvartu kao večera.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PONEDJELJAK -->
+    <div class="tl-day tl-day-mon">
+      <div class="tl-day-header">
+        <div class="tl-day-label">Ponedjeljak</div>
+        <div class="tl-day-sub">City Park + Kupke</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <div class="tl-time">10:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F3DB;&#xFE0F; Heroes' Square (Hősök tere)</div>
+            <div class="tl-desc">Ikonski trg sa kipovima mađarskih junaka. Impresivan pogled i odlično mjesto za grupnu fotografiju.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">10:30</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F3F0; Vajdahunyad Castle</div>
+            <div class="tl-desc">Bajkoviti zamak 5 min pješice od Heroes' Square. Romanički, gotički i barokni stil &mdash; besplatan ulaz u dvorište. Fotogeničan do ludila.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">12:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F37D;&#xFE0F; Ručak u okolini City Parka</div>
+            <div class="tl-desc">Više opcija u okolini &mdash; restoran Gundel za nešto elegantnije, ili street food u parku.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">14:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x2668;&#xFE0F; Szechenyi termalne kupke</div>
+            <div class="tl-desc">Najveće terme u gradu, vanjski bazeni su spektakularni. M1 metro, stanica Széchenyi fürdő. Planirati minimum 2-3 sata &mdash; nema žurbe.</div>
+          </div>
+        </div>
+        <div class="tl-item tl-item-optional">
+          <div class="tl-time">17:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x1F988; Tropicarium-Oceanarium <span class="tl-optional-badge">opciono</span></div>
+            <div class="tl-desc">Najveći akvarijum u centralnoj Evropi, ako ima energije. M4 do Kelenföldi, pa bus 103 (~30 min).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UTORAK -->
+    <div class="tl-day tl-day-tue">
+      <div class="tl-day-header">
+        <div class="tl-day-label">Utorak</div>
+        <div class="tl-day-sub">Odlazak</div>
+      </div>
+      <div class="tl-items">
+        <div class="tl-item">
+          <div class="tl-time">Rano</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">&#x2708;&#xFE0F; Pakovanje + transfer na aerodrom</div>
+            <div class="tl-desc">Organizovan prevoz do aerodroma. Prijatan let kući &mdash; puni utisaka!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Generated plan tab -->
+  <div id="genplan" class="tab-content">
+    <div id="genplanContent"></div>
+  </div>
+
+  <div class="save-bar" id="saveBar">
+    <button class="save-btn" id="saveBtn" disabled>Sačuvaj moj izbor</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <a class="footer-admin-link" id="adminLink">&copy;Budapest 2025</a>
+  </div>
+
+  <!-- Admin modal -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal">
+      <h2>Admin panel</h2>
+      <div class="modal-field">
+        <label for="adminPassword">Lozinka</label>
+        <input type="password" id="adminPassword" placeholder="Unesi lozinku..." />
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-close-voting" id="closeVotingBtn">Zatvori glasanje</button>
+        <button class="modal-btn modal-btn-generate" id="generatePlanBtn">Generiši AI plan</button>
+        <button class="modal-btn modal-btn-cancel" id="adminCancelBtn">Otkaži</button>
+      </div>
+      <div class="modal-status" id="adminStatus"></div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_PEOPLE = 13;
+
+    const ACTIVITIES = [
+      { category: "Kulturno", items: [
+        {
+          id: "parlament",
+          name: "Parlament (iznutra)",
+          icon: "\u{1F3DB}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Parliament_Building_Budapest_Hungary.jpg/960px-Parliament_Building_Budapest_Hungary.jpg",
+          desc: "Treća najveća parlamentarna zgrada na svijetu, pravo na obali Dunava. Obilazak iznutra traje oko 45 minuta \u2014 zlačene dvorane, kupola i pogled koji ostavlja bez daha.",
+        },
+        {
+          id: "tvrdava",
+          name: "Budimska tvrdava + Fisherman's Bastion",
+          icon: "\u{1F3F0}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Fisherman%27s_Bastion_2014.jpg/960px-Fisherman%27s_Bastion_2014.jpg",
+          desc: "Bajkovite bijele kule Ribarskog bastiona s najboljim pogledom na Pest i Dunav. Tvrđava krije muzeje, galerije i skrivene dvorište \u2014 idealno za popodnevnu šetnju.",
+        },
+        {
+          id: "sinagoga",
+          name: "Velika sinagoga",
+          icon: "\u{1F54D}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Dohany-Street-Synagogue-Budapest.jpg/960px-Dohany-Street-Synagogue-Budapest.jpg",
+          desc: "Najveća sinagoga u Evropi i druga najveća na svijetu. Maurski stil arhitekture oduzima dah, a iza nje se krije potresan Memorijalni park.",
+        },
+        {
+          id: "trznica",
+          name: "Velika tržnica",
+          icon: "\u{1F6D2}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Central_market_hall%2C_Budapest.jpg/960px-Central_market_hall%2C_Budapest.jpg",
+          desc: "Najpoznatija budimpeštanska tržnica u prelijepoj neogotičkoj hali. Na prizemlju svježa hrana i začini, na spratu suveniri, langoš i mađarski gulaš.",
+        },
+        {
+          id: "vajdahunyad",
+          name: "Vajdahunyad Castle",
+          icon: "\u{1F3F0}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Vajdahunyad_v%C3%A1ra_Budapest_September_2013.jpg/960px-Vajdahunyad_v%C3%A1ra_Budapest_September_2013.jpg",
+          desc: "Bajkoviti zamak u srcu City Parka, sagrađen 1896. za milenijumsku izložbu. Kombinuje romanički, gotički i barokni stil. Besplatan ulaz u dvorište \u2014 5 minuta pješice od Heroes' Square i Sz\u00E9chenyi kupki.",
+        },
+      ]},
+      { category: "Zabava / noć", items: [
+        {
+          id: "ruin_barovi",
+          name: "Ruin barovi (Szimpla Kert i okolina)",
+          icon: "\u{1F37B}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Szimpla_Kert_Budapest_1.jpg/960px-Szimpla_Kert_Budapest_1.jpg",
+          desc: "Legendarni barovi u napuštenim zgradama jevrejskog kvarta. Szimpla Kert je originalni ruin bar \u2014 svaka soba je drugačija, puna umjetnina, starih kada i šarenog haosa.",
+        },
+        {
+          id: "krstarenje",
+          name: "Krstarenje Dunavom noću",
+          icon: "\u{1F6F3}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Budapest_Danube_panorama_2.jpg/960px-Budapest_Danube_panorama_2.jpg",
+          desc: "Budimpešta noću s vode je potpuno drugi grad. Osvijetljeni Parlament, Lančani most i tvrđava reflektuju se u Dunavu \u2014 magično iskustvo od sat vremena.",
+        },
+        {
+          id: "klubovi",
+          name: "Klubovi (Instant/Fogas)",
+          icon: "\u{1F3B6}",
+          desc: "Najveći klub-kompleks u Budimpešti sa više podova i muzičkih pravaca. Techno, house, pop, live nastupi \u2014 sve pod jednim krovom do ranih jutarnjih časova.",
+        },
+      ]},
+      { category: "Opuštanje", items: [
+        {
+          id: "szechenyi",
+          name: "Sz\u00E9chenyi termalne kupke",
+          icon: "\u{2668}\u{FE0F}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Budapest_Sz%C3%A9chenyi_Baths_R01.jpg/960px-Budapest_Sz%C3%A9chenyi_Baths_R01.jpg",
+          desc: "Najveće medicinske kupke u Evropi, u srcu Gradskog parka. Žuti neobarokni kompleks s 18 bazena \u2014 spoljni bazeni su posebno fotogenični, čak i zimi.",
+        },
+        {
+          id: "gellert",
+          name: "Gell\u00E9rt termalne kupke",
+          icon: "\u{1F9D6}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Budapest_Gell%C3%A9rt_Thermal_Bath_%2854188803096%29.jpg/960px-Budapest_Gell%C3%A9rt_Thermal_Bath_%2854188803096%29.jpg",
+          desc: "Art nouveau remek-djelo s prekrasnim unutrašnjim bazenima i mozaicima. Elegantnije i mirnije od Széchenyija \u2014 pravi spa doživljaj s termalnom vodom.",
+        },
+        {
+          id: "margaret",
+          name: "Margaret Island šetnja",
+          icon: "\u{1F333}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Margaret_Island_2014.jpg/960px-Margaret_Island_2014.jpg",
+          desc: "Zelena oaza na sred Dunava, savršena za bijeg od gradske vreve. Šetnja, trčanje, muzička fontana i predivni parkovi \u2014 idealno za opušteno popodne.",
+        },
+      ]},
+      { category: "Hrana", items: [
+        {
+          id: "vecera",
+          name: "Organizovana večera u grupi",
+          icon: "\u{1F37D}",
+          desc: "Zajednička večera čitave ekipe u nekom od odličnih budimpeštanskih restorana. Mađarska kuhinja, dobro vino i još bolje društvo \u2014 obavezna tačka programa.",
+        },
+        {
+          id: "new_york_cafe",
+          name: "New York Caf\u00E9 (kafa/doručak)",
+          icon: "\u{2615}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/New_York_Cafe_Budapest.jpg/960px-New_York_Cafe_Budapest.jpg",
+          desc: "Proglašen najljepšim kafićem na svijetu. Raskošni zlatni enterijeri iz 1894. godine \u2014 kafa nije jeftina, ali ambijent je vrijedan svake pare.",
+        },
+        {
+          id: "retro_langos",
+          name: "Retro L\u00E1ngos Budapest",
+          icon: "\u{1F95E}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Langos_Hungarian_Street_Food.jpg/960px-Langos_Hungarian_Street_Food.jpg",
+          desc: "Najpoznatije mjesto za l\u00E1ngoš u Budimpešti, od 2011. Preko 30 vrsta \u2014 klasični sa pavlakom i sirom, veganski, bezglutenski, punjeni. Hrskav spolja, mekan iznutra. Nova lokacija kod Parlamenta ima rezervacije stolova.",
+        },
+        {
+          id: "getto_gulyas",
+          name: "Gett\u00F3 Guly\u00E1s",
+          icon: "\u{1F372}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Goulash_in_a_cauldron.jpg/960px-Goulash_in_a_cauldron.jpg",
+          desc: "Najomiljeniji gulaš restoran u gradu, u srcu Jevrejskog kvarta. Kratki meni s pravim mađarskim klasicima \u2014 gulaš čorba, paprikaš, domaće kiselo povrće. Uvijek puno, rezervacija obavezna. Savršeno spojiti s ruin barovima u istom kvartu.",
+        },
+        {
+          id: "menza",
+          name: "Menza",
+          icon: "\u{1F374}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Menza_Restaurant%2C_Budapest_01.jpg/960px-Menza_Restaurant%2C_Budapest_01.jpg",
+          desc: "Jedna od najpouzdanijih restauracija u Budimpešti zadnje dvije decenije. Retro šik enterijer, terasa na živahnom Liszt Ferenc trgu. Gulaš oko 7-8\u20AC, odlična vrijednost za novac. Blizu Andr\u00E1ssy Avenue i Opere.",
+        },
+        {
+          id: "stand25",
+          name: "Stand25 Bistro",
+          icon: "\u{1F31F}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Hold_Market_Hall%2C_facade_decor%2C_Lip%C3%B3tv%C3%A1ros%2C_2016_Budapest.jpg/960px-Hold_Market_Hall%2C_facade_decor%2C_Lip%C3%B3tv%C3%A1ros%2C_2016_Budapest.jpg",
+          desc: "Pristupačni bistro od Michelin-preporučenog kuvara. Uzdiže tradicionalnu mađarsku kuhinju \u2014 gulaš čorba s nježnom govedinom, pačetina, jelenska. Za posebnu večeru kad se hoće nešto kvalitetnije.",
+        },
+      ]},
+      { category: "Izleti", items: [
+        {
+          id: "tropicarium",
+          name: "Tropicarium-Oceanarium",
+          icon: "\u{1F988}",
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Shark_Tropicarium_in_Hungary.JPG/960px-Shark_Tropicarium_in_Hungary.JPG",
+          desc: "Najveći akvarijum u centralnoj Evropi, sa ajkulama, rajama i egzotičnim ribama. Smješten u Campona shopping centru na jugu Budimpešte \u2014 oko 30 min od centra.",
+        },
+      ]},
+    ];
+
+    const AVATAR_COLORS = [
+      "#c0392b", "#2980b9", "#27ae60", "#8e44ad",
+      "#d35400", "#16a085", "#e84393", "#6c5ce7",
+      "#00b894", "#e17055", "#0984e3", "#fdcb6e",
+    ];
+
+    let currentName = "";
+    let selectedActivities = new Set();
+    let hasChanges = false;
+    let votingClosed = false;
+
+    // DOM
+    const nameInput = document.getElementById("nameInput");
+    const loadBtn = document.getElementById("loadBtn");
+    const nameStatus = document.getElementById("nameStatus");
+    const nameSection = document.getElementById("nameSection");
+    const activitiesList = document.getElementById("activitiesList");
+    const saveBar = document.getElementById("saveBar");
+    const saveBtn = document.getElementById("saveBtn");
+    const summaryList = document.getElementById("summaryList");
+    const toast = document.getElementById("toast");
+    const closedBanner = document.getElementById("closedBanner");
+    const genplanTab = document.getElementById("genplanTab");
+    const genplanContent = document.getElementById("genplanContent");
+    const adminModal = document.getElementById("adminModal");
+    const adminPassword = document.getElementById("adminPassword");
+    const closeVotingBtn = document.getElementById("closeVotingBtn");
+    const generatePlanBtn = document.getElementById("generatePlanBtn");
+    const adminCancelBtn = document.getElementById("adminCancelBtn");
+    const adminStatus = document.getElementById("adminStatus");
+    const adminLink = document.getElementById("adminLink");
+
+    // Check status on load
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/status");
+        const data = await res.json();
+        votingClosed = data.voting_closed;
+        if (votingClosed) {
+          closedBanner.classList.add("visible");
+          nameSection.style.display = "none";
+          saveBar.classList.remove("visible");
+          // Disable all activity cards
+          document.querySelectorAll(".activity-card").forEach(c => {
+            c.classList.add("disabled");
+          });
+        }
+      } catch {}
+
+      // Check for generated plan
+      try {
+        const res = await fetch("/api/plan");
+        const data = await res.json();
+        if (data.plan) {
+          genplanTab.style.display = "";
+          renderGeneratedPlan(data.plan);
+        }
+      } catch {}
+    }
+
+    // Tabs
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+        tab.classList.add("active");
+        const target = tab.dataset.tab;
+        document.getElementById(target).classList.add("active");
+
+        if (target === "summary") {
+          loadSummary();
+          saveBar.classList.remove("visible");
+        } else if (target === "itinerary") {
+          loadItinerary();
+          saveBar.classList.remove("visible");
+        } else if (target === "route" || target === "genplan") {
+          saveBar.classList.remove("visible");
+        } else {
+          if (currentName && hasChanges && !votingClosed) saveBar.classList.add("visible");
+        }
+      });
+    });
+
+    // Render activities (Instagram-style cards)
+    function renderActivities() {
+      activitiesList.innerHTML = "";
+      const enabled = !!currentName && !votingClosed;
+
+      ACTIVITIES.forEach((cat) => {
+        const catDiv = document.createElement("div");
+        catDiv.className = "category";
+        catDiv.innerHTML = `<div class="category-title">${cat.category}</div>`;
+
+        cat.items.forEach((item) => {
+          const isChecked = selectedActivities.has(item.id);
+          const card = document.createElement("div");
+          card.className = "activity-card" + (isChecked ? " checked" : "") + (!enabled ? " disabled" : "");
+
+          const imgHtml = item.img
+            ? `<img class="card-image" src="${item.img}" alt="${item.name}" loading="lazy" />`
+            : '';
+
+          card.innerHTML = `
+            ${imgHtml}
+            <div class="card-body">
+              <div class="card-title-row">
+                <span class="card-icon">${item.icon}</span>
+                <span class="card-title">${item.name}</span>
+              </div>
+              <div class="card-desc">${item.desc}</div>
+              <div class="card-vote-btn">
+                <div class="card-checkbox"></div>
+                <span class="card-vote-label">${isChecked ? "Odabrano" : "Hoću ovo!"}</span>
+              </div>
+            </div>
+          `;
+
+          card.addEventListener("click", () => {
+            if (!enabled) return;
+            const nowChecked = selectedActivities.has(item.id);
+            if (nowChecked) {
+              selectedActivities.delete(item.id);
+              card.classList.remove("checked");
+              card.querySelector(".card-vote-label").textContent = "Hoću ovo!";
+            } else {
+              selectedActivities.add(item.id);
+              card.classList.add("checked");
+              card.querySelector(".card-vote-label").textContent = "Odabrano";
+            }
+            hasChanges = true;
+            saveBtn.disabled = false;
+            saveBar.classList.add("visible");
+          });
+
+          catDiv.appendChild(card);
+        });
+
+        activitiesList.appendChild(catDiv);
+      });
+    }
+
+    // Load person
+    async function loadPerson() {
+      const name = nameInput.value.trim();
+      if (!name) return;
+      currentName = name;
+
+      try {
+        const res = await fetch(`/api/selections/${encodeURIComponent(name)}`);
+        const activities = await res.json();
+        selectedActivities = new Set(activities);
+        hasChanges = false;
+        nameStatus.textContent = activities.length > 0
+          ? `Učitano ${activities.length} aktivnosti za ${name}`
+          : `Zdravo ${name}! Odaberi aktivnosti ispod.`;
+        nameInput.blur();
+      } catch {
+        selectedActivities = new Set();
+        nameStatus.textContent = `Zdravo ${name}! Odaberi aktivnosti ispod.`;
+      }
+
+      renderActivities();
+      saveBtn.disabled = true;
+      saveBar.classList.remove("visible");
+    }
+
+    loadBtn.addEventListener("click", loadPerson);
+    nameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") loadPerson();
+    });
+
+    // Save
+    async function savePerson() {
+      if (!currentName || votingClosed) return;
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Čuvam...";
+
+      try {
+        const res = await fetch("/api/selections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: currentName,
+            activities: [...selectedActivities],
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.error || "Greška pri čuvanju");
+        } else {
+          hasChanges = false;
+          saveBar.classList.remove("visible");
+          showToast("Sačuvano!");
+        }
+      } catch {
+        showToast("Greška pri čuvanju");
+      }
+
+      saveBtn.textContent = "Sačuvaj moj izbor";
+      saveBtn.disabled = false;
+    }
+
+    saveBtn.addEventListener("click", savePerson);
+
+    // Summary with progress bars, sorted by votes
+    async function loadSummary() {
+      try {
+        const res = await fetch("/api/selections");
+        const rows = await res.json();
+
+        const byActivity = {};
+        rows.forEach((r) => {
+          if (!byActivity[r.activity]) byActivity[r.activity] = [];
+          byActivity[r.activity].push(r.name);
+        });
+
+        const allNames = [...new Set(rows.map((r) => r.name))].sort();
+        const nameColors = {};
+        allNames.forEach((n, i) => {
+          nameColors[n] = AVATAR_COLORS[i % AVATAR_COLORS.length];
+        });
+
+        // Build flat list of all activities with vote counts for sorting
+        const allActivities = [];
+        ACTIVITIES.forEach((cat) => {
+          cat.items.forEach((item) => {
+            const people = byActivity[item.id] || [];
+            allActivities.push({ ...item, category: cat.category, people });
+          });
+        });
+
+        // Sort by vote count descending
+        allActivities.sort((a, b) => b.people.length - a.people.length);
+
+        summaryList.innerHTML = "";
+
+        allActivities.forEach((item) => {
+          const people = item.people;
+          const pct = Math.round((people.length / TOTAL_PEOPLE) * 100);
+          const div = document.createElement("div");
+          div.className = "summary-activity";
+          div.innerHTML = `
+            <div class="summary-activity-header">
+              <span class="summary-activity-icon">${item.icon}</span>
+              <span class="summary-activity-name">${item.name}</span>
+              <span class="summary-count">${people.length}/${TOTAL_PEOPLE}</span>
+            </div>
+            <div class="summary-progress">
+              <div class="summary-progress-fill" style="width:${pct}%"></div>
+            </div>
+            <div class="summary-people">
+              ${people.length === 0
+                ? '<span class="summary-nobody">Niko još nije odabrao</span>'
+                : people.map((p) => `
+                  <div class="summary-person">
+                    <div class="summary-avatar" style="background:${nameColors[p]}">
+                      ${p.charAt(0).toUpperCase()}
+                    </div>
+                    ${p}
+                  </div>
+                `).join("")}
+            </div>
+          `;
+          summaryList.appendChild(div);
+        });
+      } catch {
+        summaryList.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">Greška pri učitavanju</p>';
+      }
+    }
+
+    // Itinerary data
+    const ITINERARY_META = {
+      parlament: {
+        transport: "M3 (Corvin-negyed) \u2192 M2 (Deak Ferenc ter) \u2192 M2 do Kossuth Lajos ter",
+        transportIcon: "\u{1F687}",
+        time: "~15 min",
+        duration: "1.5-2h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Hungarian+Parliament+Building,+Budapest",
+      },
+      tvrdava: {
+        transport: "M3 (Corvin-negyed) \u2192 M2 (Deak) \u2192 M2 do Batthyany ter, pa pješice uz brdo ili Funicular",
+        transportIcon: "\u{1F687}",
+        time: "~25 min",
+        duration: "2-3h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Buda+Castle,+Budapest",
+      },
+      sinagoga: {
+        transport: "M3 (Corvin-negyed) do Deak Ferenc ter, pa 5 min pješice",
+        transportIcon: "\u{1F687}",
+        time: "~12 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Dohany+Street+Synagogue,+Budapest",
+      },
+      trznica: {
+        transport: "Tramvaj 4/6 sa Ulloi ut (5 min pješice) do Fovam ter, ili pješice ~15 min",
+        transportIcon: "\u{1F68B}",
+        time: "~10 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Central+Market+Hall,+Budapest",
+      },
+      ruin_barovi: {
+        transport: "M3 (Corvin-negyed) do Deak Ferenc ter, pa 8 min pješice kroz VII kvart",
+        transportIcon: "\u{1F687}",
+        time: "~15 min",
+        duration: "2-4h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Szimpla+Kert,+Budapest",
+      },
+      krstarenje: {
+        transport: "M3 (Corvin-negyed) do Ferenciek tere, pa 5 min do pristaništa",
+        transportIcon: "\u{1F687}",
+        time: "~12 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Danube+river+cruise+Budapest",
+      },
+      klubovi: {
+        transport: "M3 (Corvin-negyed) do Deak Ferenc ter, pa 10 min pješice (Akacfa utca)",
+        transportIcon: "\u{1F687}",
+        time: "~15 min",
+        duration: "3-5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Instant-Fogas,+Budapest",
+      },
+      szechenyi: {
+        transport: "M3 (Corvin-negyed) \u2192 M1 (Deak) \u2192 M1 do Szechenyi furdo",
+        transportIcon: "\u{1F687}",
+        time: "~20 min",
+        duration: "2-3h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Szechenyi+Thermal+Bath,+Budapest",
+      },
+      gellert: {
+        transport: "Tramvaj 47/49 sa Ulloi ut do Szent Gellert ter (direktno)",
+        transportIcon: "\u{1F68B}",
+        time: "~12 min",
+        duration: "2-3h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Gellert+Thermal+Bath,+Budapest",
+      },
+      margaret: {
+        transport: "Tramvaj 4/6 do Margit hid, pa pješice na ostrvo",
+        transportIcon: "\u{1F68B}",
+        time: "~25 min",
+        duration: "1.5-2h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Margaret+Island,+Budapest",
+      },
+      vecera: {
+        transport: "Zavisi od restorana \u2014 centar grada M3 do Deak/Ferenciek",
+        transportIcon: "\u{1F687}",
+        time: "~10-15 min",
+        duration: "2-3h",
+        mapsUrl: "https://www.google.com/maps/search/restaurants+Budapest+center",
+      },
+      new_york_cafe: {
+        transport: "M3 (Corvin-negyed) do Blaha Lujza ter, pa 3 min pješice",
+        transportIcon: "\u{1F687}",
+        time: "~8 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/New+York+Cafe,+Budapest",
+      },
+      vajdahunyad: {
+        transport: "M3 (Corvin-negyed) \u2192 M1 (Deak) \u2192 M1 do H\u0151s\u00F6k tere, pa 5 min pješice",
+        transportIcon: "\u{1F687}",
+        time: "~22 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Vajdahunyad+Castle,+Budapest",
+      },
+      retro_langos: {
+        transport: "M3 (Corvin-negyed) \u2192 M2 (Deak) \u2192 M2 do Kossuth Lajos ter, pa 3 min pješice (V\u00E9csey utca 3)",
+        transportIcon: "\u{1F687}",
+        time: "~15 min",
+        duration: "30-45 min",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/V%C3%A9csey+utca+3,+Budapest",
+      },
+      getto_gulyas: {
+        transport: "M3 (Corvin-negyed) do Deak Ferenc ter, pa 8 min pješice (Wessel\u00E9nyi utca 18)",
+        transportIcon: "\u{1F687}",
+        time: "~15 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Wessel%C3%A9nyi+utca+18,+Budapest",
+      },
+      menza: {
+        transport: "M3 (Corvin-negyed) do Deak Ferenc ter, pa 10 min pješice do Liszt Ferenc ter",
+        transportIcon: "\u{1F687}",
+        time: "~15 min",
+        duration: "1-1.5h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Menza+Restaurant,+Budapest",
+      },
+      stand25: {
+        transport: "M3 (Corvin-negyed) \u2192 M2 (Deak) \u2192 M2 do Kossuth Lajos ter ili Batthy\u00E1ny ter, pa 5 min pješice",
+        transportIcon: "\u{1F687}",
+        time: "~18 min",
+        duration: "1.5-2h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Stand25+Bistro,+Budapest",
+      },
+      tropicarium: {
+        transport: "M3 (Corvin-negyed) \u2192 M4 (Keleti) \u2192 M4 do Kelenf\u00F6ldi, pa bus 103 do Campona",
+        transportIcon: "\u{1F68C}",
+        time: "~30 min",
+        duration: "1.5-2h",
+        mapsUrl: "https://www.google.com/maps/dir/Mester+utca+29,+Budapest/Tropicarium+Budapest",
+      },
+    };
+
+    const DAYS = [
+      {
+        label: "Subota",
+        subtitle: "Pest centar + južni dio",
+        activities: ["trznica", "gellert", "sinagoga", "tropicarium", "getto_gulyas", "menza", "ruin_barovi", "klubovi"],
+      },
+      {
+        label: "Nedjelja",
+        subtitle: "Buda strana + Dunav",
+        activities: ["tvrdava", "parlament", "retro_langos", "krstarenje"],
+      },
+      {
+        label: "Ponedjeljak",
+        subtitle: "Sjeverni Pest + opuštanje",
+        activities: ["new_york_cafe", "szechenyi", "vajdahunyad", "margaret", "stand25", "vecera"],
+      },
+    ];
+
+    const ACTIVITY_MAP = {};
+    ACTIVITIES.forEach((cat) => cat.items.forEach((a) => { ACTIVITY_MAP[a.id] = a; }));
+
+    async function loadItinerary() {
+      const itineraryList = document.getElementById("itineraryList");
+      const itinEmpty = document.getElementById("itinEmpty");
+      try {
+        const res = await fetch("/api/selections");
+        const rows = await res.json();
+
+        const byActivity = {};
+        rows.forEach((r) => {
+          if (!byActivity[r.activity]) byActivity[r.activity] = [];
+          byActivity[r.activity].push(r.name);
+        });
+
+        const allNames = [...new Set(rows.map((r) => r.name))].sort();
+        const nameColors = {};
+        allNames.forEach((n, i) => {
+          nameColors[n] = AVATAR_COLORS[i % AVATAR_COLORS.length];
+        });
+
+        const hasAny = DAYS.some((day) => day.activities.some((id) => (byActivity[id] || []).length > 0));
+
+        if (!hasAny) {
+          itineraryList.innerHTML = "";
+          itinEmpty.style.display = "block";
+          return;
+        }
+
+        itinEmpty.style.display = "none";
+        itineraryList.innerHTML = "";
+
+        DAYS.forEach((day) => {
+          const voted = day.activities.filter((id) => (byActivity[id] || []).length > 0);
+          if (voted.length === 0) return;
+
+          const dayDiv = document.createElement("div");
+          dayDiv.className = "itin-day";
+
+          dayDiv.innerHTML = `
+            <div class="itin-day-header">
+              <div>
+                <div class="itin-day-label">${day.label}</div>
+                <div class="itin-day-subtitle">${day.subtitle}</div>
+              </div>
+            </div>
+          `;
+
+          voted.forEach((id, idx) => {
+            const act = ACTIVITY_MAP[id];
+            const meta = ITINERARY_META[id];
+            const voters = byActivity[id] || [];
+
+            if (idx > 0) {
+              const connector = document.createElement("div");
+              connector.className = "itin-connector";
+              dayDiv.appendChild(connector);
+            }
+
+            const card = document.createElement("div");
+            card.className = "itin-card";
+            card.innerHTML = `
+              <div class="itin-card-top">
+                <div class="itin-card-icon">${act.icon}</div>
+                <div style="flex:1">
+                  <div class="itin-card-title">${act.name}</div>
+                  <div class="itin-card-voters">${voters.join(", ")}</div>
+                </div>
+                <div class="itin-card-duration">${meta.duration}</div>
+              </div>
+              <div class="itin-transport">
+                <div class="itin-transport-icon">${meta.transportIcon}</div>
+                <div class="itin-transport-text">${meta.transport}</div>
+                <div class="itin-transport-time">${meta.time}</div>
+              </div>
+              <a class="itin-maps-link" href="${meta.mapsUrl}" target="_blank" rel="noopener">
+                &#x1F4CD; Otvori u Google Maps
+              </a>
+            `;
+            dayDiv.appendChild(card);
+          });
+
+          itineraryList.appendChild(dayDiv);
+        });
+      } catch {
+        itineraryList.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">Greška pri učitavanju</p>';
+      }
+    }
+
+    // Render generated plan
+    function renderGeneratedPlan(plan) {
+      if (!plan || !plan.days || plan.days.length === 0) {
+        genplanContent.innerHTML = '<div class="gen-plan-empty">Plan još nije generisan.</div>';
+        return;
+      }
+
+      let html = `
+        <div class="gen-plan-intro">
+          <div class="gen-plan-intro-badge">&#x1F916; AI generisani plan</div>
+          <p>Plan kreiran na osnovu glasova svih učesnika, optimizovan po danima i geografskim zonama.</p>
+        </div>
+      `;
+
+      plan.days.forEach((day) => {
+        html += `
+          <div class="gen-plan-day">
+            <div class="gen-plan-day-header">
+              <div class="gen-plan-day-label">${day.day}${day.date ? ' &mdash; ' + day.date : ''}</div>
+              ${day.theme ? `<div class="gen-plan-day-theme">${day.theme}</div>` : ''}
+            </div>
+            <div class="gen-plan-items">
+        `;
+
+        (day.locations || []).forEach((loc) => {
+          const optClass = loc.optional ? ' gen-plan-item-optional' : '';
+          html += `
+            <div class="gen-plan-item${optClass}">
+              <div class="gen-plan-time">${loc.time || ''}</div>
+              <div class="gen-plan-dot"></div>
+              <div class="gen-plan-card">
+                <div class="gen-plan-card-name">
+                  ${loc.name}
+                  ${loc.optional ? '<span class="tl-optional-badge">opciono</span>' : ''}
+                </div>
+                ${loc.address ? `<div class="gen-plan-card-address">${loc.address}</div>` : ''}
+                ${loc.description ? `<div class="gen-plan-card-desc">${loc.description}</div>` : ''}
+                ${loc.transport ? `<div class="gen-plan-card-transport">${loc.transport}</div>` : ''}
+                ${loc.duration ? `<div class="gen-plan-card-duration">${loc.duration}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+      });
+
+      genplanContent.innerHTML = html;
+    }
+
+    // Admin modal
+    adminLink.addEventListener("click", () => {
+      adminModal.classList.add("visible");
+      adminPassword.value = "";
+      adminStatus.textContent = "";
+      adminStatus.className = "modal-status";
+    });
+
+    adminCancelBtn.addEventListener("click", () => {
+      adminModal.classList.remove("visible");
+    });
+
+    adminModal.addEventListener("click", (e) => {
+      if (e.target === adminModal) adminModal.classList.remove("visible");
+    });
+
+    closeVotingBtn.addEventListener("click", async () => {
+      const pw = adminPassword.value;
+      if (!pw) {
+        adminStatus.textContent = "Unesi lozinku";
+        adminStatus.className = "modal-status error";
+        return;
+      }
+
+      closeVotingBtn.disabled = true;
+      closeVotingBtn.innerHTML = '<span class="spinner"></span>Zatvaram...';
+      adminStatus.textContent = "";
+
+      try {
+        const res = await fetch("/api/admin/close", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: pw }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          adminStatus.textContent = data.error || "Greška";
+          adminStatus.className = "modal-status error";
+        } else {
+          adminStatus.textContent = "Glasanje zatvoreno!";
+          adminStatus.className = "modal-status success";
+          votingClosed = true;
+          closedBanner.classList.add("visible");
+          nameSection.style.display = "none";
+          saveBar.classList.remove("visible");
+          document.querySelectorAll(".activity-card").forEach(c => c.classList.add("disabled"));
+        }
+      } catch {
+        adminStatus.textContent = "Greška pri povezivanju";
+        adminStatus.className = "modal-status error";
+      }
+
+      closeVotingBtn.disabled = false;
+      closeVotingBtn.textContent = "Zatvori glasanje";
+    });
+
+    generatePlanBtn.addEventListener("click", async () => {
+      const pw = adminPassword.value;
+      if (!pw) {
+        adminStatus.textContent = "Unesi lozinku";
+        adminStatus.className = "modal-status error";
+        return;
+      }
+
+      generatePlanBtn.disabled = true;
+      generatePlanBtn.innerHTML = '<span class="spinner"></span>Generišem plan...';
+      adminStatus.textContent = "Ovo može potrajati 15-30 sekundi...";
+      adminStatus.className = "modal-status";
+
+      try {
+        const res = await fetch("/api/admin/generate-plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: pw }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          adminStatus.textContent = data.error || "Greška";
+          adminStatus.className = "modal-status error";
+        } else {
+          adminStatus.textContent = "Plan generisan!";
+          adminStatus.className = "modal-status success";
+          genplanTab.style.display = "";
+          renderGeneratedPlan(data.plan);
+          setTimeout(() => {
+            adminModal.classList.remove("visible");
+            // Switch to generated plan tab
+            document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+            genplanTab.classList.add("active");
+            document.getElementById("genplan").classList.add("active");
+          }, 1000);
+        }
+      } catch {
+        adminStatus.textContent = "Greška pri povezivanju";
+        adminStatus.className = "modal-status error";
+      }
+
+      generatePlanBtn.disabled = false;
+      generatePlanBtn.textContent = "Generiši AI plan";
+    });
+
+    // Toast
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    // Persist name in localStorage
+    const savedName = localStorage.getItem("budimpesta_name");
+    if (savedName) {
+      nameInput.value = savedName;
+    }
+
+    const origLoadPerson = loadPerson;
+    const wrappedLoadPerson = async () => {
+      await origLoadPerson();
+      if (currentName) localStorage.setItem("budimpesta_name", currentName);
+    };
+    loadBtn.removeEventListener("click", loadPerson);
+    loadBtn.addEventListener("click", wrappedLoadPerson);
+    nameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") wrappedLoadPerson();
+    });
+
+    // Auto-load if name was saved
+    if (savedName) {
+      wrappedLoadPerson();
+    }
+
+    // Initial render
+    renderActivities();
+
+    // Check status and plan
+    checkStatus();
+  </script>
+</body>
+</html>

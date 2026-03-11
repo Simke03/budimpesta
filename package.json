@@ -1,0 +1,21 @@
+{
+  "name": "budimpesta",
+  "version": "1.0.0",
+  "description": "Budapest group trip planner",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Use: npx vercel dev'",
+    "build": "true"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@hono/node-server": "^1.13.0",
+    "@neondatabase/serverless": "^0.10.0",
+    "hono": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vercel": "^39.0.0"
+  }
+}
