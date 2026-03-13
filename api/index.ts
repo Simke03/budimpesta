@@ -187,12 +187,13 @@ Smještaj: Mester utca 29, Budapest (IX kvart, Corvin-negyed metro stanica M3)
 
 Trajanje:
 - Subota dolazak ~11:30
-- Utorak rano ujutro odlazak
+- Utorak rano ujutro odlazak (SAMO pakovanje i transfer na aerodrom, NIKAKVE aktivnosti za utorak!)
 
 Aktivnosti sortirane po glasovima (od najviše ka najmanje):
 ${activityList}
 
 Pravila za raspored:
+- Plan ima SAMO 3 dana aktivnosti: subota, nedjelja, ponedjeljak. Utorak je ISKLJUČIVO odlazak - ne generiši nikakve aktivnosti za utorak!
 - Kulturne atrakcije ujutro i poslijepodne
 - Kupke uvijek poslijepodne (14:00-18:00)
 - Izlasci i klubovi od 22:00
