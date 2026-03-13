@@ -915,6 +915,31 @@
       color: white;
     }
 
+    .gen-plan-map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0 6px 68px;
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #4285F4, #34A853);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(66,133,244,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .gen-plan-map-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(66,133,244,0.4);
+    }
+    .gen-plan-map-btn:active {
+      transform: translateY(0);
+    }
+
     .gen-plan-day:nth-child(2) .gen-plan-day-header { background: linear-gradient(135deg, #e74c3c, #c0392b); }
     .gen-plan-day:nth-child(3) .gen-plan-day-header { background: linear-gradient(135deg, #2980b9, #2471a3); }
     .gen-plan-day:nth-child(4) .gen-plan-day-header { background: linear-gradient(135deg, #27ae60, #229954); }
@@ -2184,16 +2209,26 @@ new_york_cafe: {
       `;
 
       plan.days.forEach((day) => {
+        // Build Google Maps directions URL from locations with addresses
+        const locs = (day.locations || []).filter(l => l.address && !l.optional);
+        const allLocs = (day.locations || []);
+        let mapUrl = '';
+        if (locs.length >= 2) {
+          const stops = locs.map(l => encodeURIComponent(l.address + ', Budapest'));
+          mapUrl = 'https://www.google.com/maps/dir/' + stops.join('/');
+        }
+
         html += `
           <div class="gen-plan-day">
             <div class="gen-plan-day-header">
               <div class="gen-plan-day-label">${day.day}${day.date ? ' &mdash; ' + day.date : ''}</div>
               ${day.theme ? `<div class="gen-plan-day-theme">${day.theme}</div>` : ''}
             </div>
+            ${mapUrl ? `<a class="gen-plan-map-btn" href="${mapUrl}" target="_blank" rel="noopener">&#x1F5FA;&#xFE0F; Otvori mapu dana</a>` : ''}
             <div class="gen-plan-items">
         `;
 
-        (day.locations || []).forEach((loc) => {
+        allLocs.forEach((loc) => {
           const optClass = loc.optional ? ' gen-plan-item-optional' : '';
           html += `
             <div class="gen-plan-item${optClass}">
