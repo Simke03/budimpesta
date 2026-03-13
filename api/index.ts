@@ -145,6 +145,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return json(res, { ok: true, message: "Sve resetovano!" });
     }
 
+    // POST /api/admin/clear-plan
+    if (method === "POST" && path === "/api/admin/clear-plan") {
+      const { password } = req.body;
+      if (password !== "budimpesta2026") {
+        return json(res, { error: "Pogrešna lozinka" }, 401);
+      }
+      await sql`DELETE FROM settings WHERE key = 'generated_plan'`;
+      return json(res, { ok: true, message: "Plan obrisan!" });
+    }
+
     // GET /api/plan
     if (method === "GET" && path === "/api/plan") {
       const rows = await sql`SELECT value FROM settings WHERE key = 'generated_plan'`;
@@ -170,9 +180,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return json(res, { error: "Prvo zatvori glasanje!" }, 400);
       }
 
-      const voteCounts = await sql`SELECT activity_id, COUNT(*) as count FROM votes GROUP BY activity_id ORDER BY count DESC`;
-      const activityList = voteCounts.map((r: any) => `- ${r.activity_id}: ${r.count} glasova`).join("\n");
-
       const apiKey = process.env.ANTHROPIC_API_KEY;
       if (!apiKey) {
         return json(res, { error: "ANTHROPIC_API_KEY nije podešen" }, 500);
@@ -181,30 +188,50 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const { default: Anthropic } = await import("@anthropic-ai/sdk");
       const client = new Anthropic({ apiKey });
 
-      const userPrompt = `Napravi plan putovanja za grupu od 13 osoba u Budimpešti.
+      const systemPrompt = `Ti generišeš plan putovanja u Budimpešti za grupu od 13 osoba.
+Smještaj: Mester utca 29 (M3 metro, Corvin-negyed stanica).
 
-Smještaj: Mester utca 29, Budapest (IX kvart, Corvin-negyed metro stanica M3)
+STRIKTNI RASPORED — ne mijenjaj redosljed ni vremena:
 
-Trajanje:
-- Subota dolazak ~11:30
-- Utorak rano ujutro odlazak (SAMO pakovanje i transfer na aerodrom, NIKAKVE aktivnosti za utorak!)
+SUBOTA 28. jun — "Dolazak i prvi utisci"
+- 11:30 Dolazak na smještaj, Mester utca 29
+- 12:30 Szent István Bazilika + trg — šetnja, kafići, opuštena atmosfera
+- 14:00 Ručak — Retro Lángos, Vécsey utca 3 (5 min pješice od Bazilika)
+- 16:00 360 Bar — rooftop koktel bar, Andrássy út 39, panoramski pogled na grad
+- 19:00 Večera — Menza restoran, Liszt Ferenc tér 2 (retro šik, odlična mađarska kuhinja)
+- 20:30 Dunav night cruise — noćna vožnja Dunavom sa pogledom na osvijetljeni Parlament i tvrđavu
+- 22:30 Noćni izlazak — IZBOR: Instant-Fogas (7 soba, svaka drugačija muzika) ILI Széchenyi noćna žurka u termama
 
-Aktivnosti sortirane po glasovima (od najviše ka najmanje):
-${activityList}
+NEDJELJA 29. jun — "Klasični Budimpešta"
+- 09:00 Doručak — New York Café, Erzsébet krt. 9-11 (najljepši kafić na svijetu)
+- 11:00 Fisherman's Bastion + Budimska tvrđava — Castle Hill, najbolji pogled na Dunav i Parlament. Sa Fisherman's Bastiona pruža se spektakularan pogled na Parlament s druge strane Dunava. Uveče mogu prošetati pored Parlamenta koji je osvijetljen i izgleda nevjerovatno noću.
+- 14:00 Ručak — Velika tržnica (Nagy Vásárcsarnok), lángos na spratu, suveniri
+- 16:00 Slobodno vrijeme / kafići
+- 19:00 Večera — Gettó Gulyás, Wesselényi utca 18 (rezervacija obavezna!)
+- 21:00 Szimpla Kert ruin bar, Kazinczy utca 14
 
-Pravila za raspored:
-- Plan ima SAMO 3 dana aktivnosti: subota, nedjelja, ponedjeljak. Utorak je ISKLJUČIVO odlazak - ne generiši nikakve aktivnosti za utorak!
-- Kulturne atrakcije ujutro i poslijepodne
-- Kupke uvijek poslijepodne (14:00-18:00)
-- Izlasci i klubovi od 22:00
-- Geografski grupiši aktivnosti (City Park blok zajedno, Jevrejski kvart zajedno, Castle Hill zajedno)
-- Subota rezervisana za: Bazilika, Retro Lángos, 360 Bar, noćni izlazak
-- Nedjelja: New York Café doručak, Fisherman's Bastion, Velika tržnica, Gettó Gulyás, Szimpla
-- Ponedjeljak: City Park (Heroes Square + Vajdahunyad + Széchenyi), opciono Tropicarium
-- Aktivnosti sa malo glasova staviti kao opcione ili izostaviti
-- Svaka lokacija treba imati: naziv, adresu, kako doći od smještaja ili prethodne lokacije (metro/tramvaj linija i broj stanica), procijenjeno trajanje
+PONEDJELJAK 30. jun — "City Park i opuštanje"
+- 10:00 Heroes' Square (Hősök tere) — ikonični trg
+- 11:00 Vajdahunyad Castle — bajkoviti zamak, 5 min pješice, besplatan ulaz
+- 13:00 Ručak u okolini City Parka
+- 14:30 Széchenyi termalne kupke — vanjski bazeni, M1 metro stanica Széchenyi fürdő
+- 18:00 Opciono: Velika sinagoga (Dohány utca 2) — najveća sinagoga u Evropi sa muzejom, označi kao OPCIONO
+- 20:00 Opciono: Tropicarium-Oceanarium — najveći akvarijum u centralnoj Evropi (M4 do Kelenföldi, pa bus 103, ~30 min), označi kao OPCIONO
 
-Vrati ISKLJUČIVO validan JSON u ovom formatu, bez ikakvog teksta prije ili poslije:
+Za svaku lokaciju dodaj:
+- Tačno vrijeme
+- Naziv i adresu
+- Kratak opis (1 rečenica)
+- Kako doći od prethodne lokacije (metro/tramvaj linija, broj stanica, pješice)
+- Trajanje posjete
+
+VAŽNO:
+- Vrati ISKLJUČIVO validan JSON, bez teksta prije ili poslije
+- Koristi crnogorski jezik
+- Ne dodavaj nikakve lokacije koje nisu navedene u ovom promptu
+- Ne mijenjaj redosljed ni vremena`;
+
+      const userPrompt = `Generiši plan putovanja prema uputstvima. Vrati ISKLJUČIVO validan JSON u ovom formatu:
 {
   "days": [
     {
@@ -230,7 +257,7 @@ Vrati ISKLJUČIVO validan JSON u ovom formatu, bez ikakvog teksta prije ili posl
         const response = await client.messages.create({
           model: "claude-sonnet-4-20250514",
           max_tokens: 4096,
-          system: "Ti si asistent za planiranje putovanja. Generiši detaljan plan putovanja na crnogorskom jeziku u JSON formatu.",
+          system: systemPrompt,
           messages: [{ role: "user", content: userPrompt }],
         });
 
